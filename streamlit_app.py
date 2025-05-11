@@ -5,6 +5,15 @@ from io import BytesIO
 
 st.title("PCI Excel Batch Statistics Extractor")
 
+# 👇 Your copyright info
+st.markdown("""
+---
+**Mohamed Ali**  
+Pavement Engineer  
+📞 +966581764292
+---
+""")
+
 uploaded_files = st.file_uploader(
     "Upload one or more PCI Excel files", 
     type=["xlsx"], 
@@ -56,27 +65,4 @@ if uploaded_files:
 else:
     st.info("Upload PCI Excel files to begin.")
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-from io import BytesIO
-
-st.title("PCI Excel Batch Statistics Extractor")
-
-# 👇 Your copyright info
-st.markdown("""
----
-**Mohamed Ali**  
-Pavement Engineer  
-📞 +966581764292
----
-""")
-
-uploaded_files = st.file_uploader(
-    "Upload one or more PCI Excel files", 
-    type=["xlsx"], 
-    accept_multiple_files=True
-)
-
-# ... rest of your code ...
 
