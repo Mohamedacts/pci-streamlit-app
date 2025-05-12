@@ -5,7 +5,6 @@ from io import BytesIO
 
 st.title("PCI Excel Batch Statistics Extractor")
 
-# 👇 Your copyright info
 st.markdown("""
 ---
 **Mohamed Ali**  
@@ -25,25 +24,26 @@ results = []
 if uploaded_files:
     for uploaded_file in uploaded_files:
         try:
-            # Read the PCI sheet, skip first 6 rows (headers)
-            df = pd.read_excel(uploaded_file, sheet_name='PCI', skiprows=6, engine='openpyxl')
-            pci_col = df.columns[3]
-            pci_values = pd.to_numeric(df[pci_col], errors='coerce').dropna()
+            # Read data with correct skiprows (5 rows) and no headers
+            df = pd.read_excel(uploaded_file, sheet_name='PCI', skiprows=5, header=None, engine='openpyxl')
+            
+            # PCI values are in column index 3 (4th column)
+            pci_values = pd.to_numeric(df[3], errors='coerce').dropna()
+            
             if len(pci_values) == 0:
+                st.warning(f"No PCI values found in {uploaded_file.name}")
                 continue
-            avg = pci_values.mean()
-            maxv = pci_values.max()
-            minv = pci_values.min()
-            median = pci_values.median()
+                
             results.append({
                 'File Name': uploaded_file.name,
-                'Average': avg,
-                'Max': maxv,
-                'Min': minv,
-                'Median': median
+                'Average': round(pci_values.mean(), 2),
+                'Max': round(pci_values.max(), 2),
+                'Min': round(pci_values.min(), 2),
+                'Median': round(pci_values.median(), 2)
             })
+            
         except Exception as e:
-            st.warning(f"Error processing {uploaded_file.name}: {e}")
+            st.error(f"Error processing {uploaded_file.name}: {str(e)}")
 
     if results:
         summary = pd.DataFrame(results)
@@ -61,8 +61,6 @@ if uploaded_files:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     else:
-        st.info("No valid PCI data found in uploaded files.")
+        st.warning("No valid PCI data found in any uploaded files.")
 else:
     st.info("Upload PCI Excel files to begin.")
-
-
